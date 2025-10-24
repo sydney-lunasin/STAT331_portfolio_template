@@ -111,7 +111,17 @@ ca_childcare |>
 
 ```{r}
 #| label: wd-3-numeric-ex-1
+# Challenge 3
+teacher_evals_compare <- teacher_evals |> 
+  filter(question_no == 903) |> 
+  mutate(SET_level = if_else(SET_score_avg >= 4, "excellent", "standard"),
+         sen_level = case_when(seniority <= 4 ~ "junior",
+                               between(seniority, 5,8) ~ "senior",
+                               seniority > 8 ~ "very senior"
+         )) |> 
+  select(course_id, SET_level, sen_level)
 
+teacher_evals_compare  
 
 ```
 
@@ -119,6 +129,15 @@ ca_childcare |>
 
 ```{r}
 #| label: wd-3-character
+# Lab 5
+witnesses <- person |> 
+  filter(
+    (address_street_name == "Northwestern Dr" &
+       address_number == max(address_number[address_street_name == "Northwestern Dr"])) |
+    (address_street_name == "Franklin Ave" &
+       str_detect(name, "^Annabel"))
+  )  
+witnesses
 
 ```
 
@@ -126,7 +145,14 @@ ca_childcare |>
 
 ```{r}
 #| label: wd-3-string
-
+# Lab 5
+first_witness_info <- 
+  right_join(x = person,
+             y = drivers_license,
+             by = join_by(license_id == id)) |> 
+  filter(str_detect(plate_number,
+                    pattern = "H42W"))
+first_witness_info
 ```
 
 -   Date (example must use functions from **lubridate**)
@@ -332,6 +358,11 @@ first_murder_suspect
 ```{r}
 #| label: wd-6-semi
 
+# Lab 5 modified
+income |> 
+  semi_join(suspect_concert,
+            by = join_by(ssn))
+
 ```
 
 -   `anti_join()`
@@ -347,6 +378,19 @@ first_murder_suspect
 
 ```{r}
 #| label: wd-7-long
+
+# Lab 4
+one_table <- ca_childcare |>
+  select(census_region, study_year, mc_infant, mc_toddler, mc_preschool) |> 
+  pivot_longer(
+    cols = starts_with("mc_"),
+    names_to = "age_group",
+    names_pattern = "(infant|toddler|preschool)"
+    ) |>
+  rename(median_childcare = value) |> 
+  mutate(age_group = factor(age_group, levels = c("infant","toddler","preschool"))
+  )
+one_table
 
 ```
 
