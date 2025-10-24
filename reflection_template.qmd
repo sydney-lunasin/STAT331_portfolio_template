@@ -75,6 +75,18 @@ median_house_income
 
 ```{r}
 #| label: wd-2-ex-3
+# From Lab 4
+one_table <- ca_childcare |>
+  select(census_region, study_year, mc_infant, mc_toddler, mc_preschool) |> 
+  pivot_longer(
+    cols = starts_with("mc_"),
+    names_to = "age_group",
+    names_pattern = "(infant|toddler|preschool)"
+    ) |>
+  rename(median_childcare = value) |> 
+  mutate(age_group = factor(age_group, levels = c("infant","toddler","preschool"))
+  )
+one_table
 
 ```
 
@@ -99,6 +111,7 @@ ca_childcare |>
 
 ```{r}
 #| label: wd-3-numeric-ex-1
+
 
 ```
 
@@ -129,6 +142,25 @@ ca_childcare |>
 
 ```{r}
 #| label: wd-4-numeric-ex-1
+# Lab 3
+teacher_evals_clean <- teacher_evals |> 
+  rename(sex = gender) |> 
+   mutate(teacher_id = as.character(teacher_id),
+          no_participants = as.numeric(no_participants),
+          question_no = as.character(question_no)) |> 
+   filter(no_participants > 10) |>
+   select(course_id,
+          teacher_id,
+          question_no,
+          no_participants,
+          resp_share,
+          SET_score_avg,
+          percent_failed_cur,
+          academic_degree,
+          seniority,
+          sex)
+  
+teacher_evals_clean
 
 ```
 
@@ -137,12 +169,29 @@ ca_childcare |>
 ```{r}
 #| label: wd-4-numeric-ex-2
 
+
 ```
 
 -   Factor Example 1 (renaming levels)
 
 ```{r}
 #| label: wd-4-factor-ex-1
+# Lab 4
+ca_childcare <- ca_childcare |> 
+  mutate(county_name = str_remove(county_name, " County"),
+         census_region = fct_collapse(.f = county_name,
+                                      "Superior California" = superior_counties,
+                                      "North Coast" = north_coast_counties,
+                                      "San Francisco Bay Area" = san_fran_counties,
+                                      "Northern San Joaquin Valley" = n_san_joaquin_counties,
+                                      "Central Coast" = central_coast_counties,
+                                      "Southern San Joaquin Valley" = s_san_joaquin_counties,
+                                      "Inland Empire" = inland_counties,
+                                      "Los Angeles County" = la_county,
+                                      "Orange County" = orange_county,
+                                      "San Diego - Imperial" = san_diego_imperial_counties))
+ca_childcare
+
 
 ```
 
@@ -150,6 +199,33 @@ ca_childcare |>
 
 ```{r}
 #| label: wd-4-factor-ex-2
+# Lab 4
+ggplot(data = one_table,
+       mapping = aes(x = study_year, y = median_childcare, 
+                  color = fct_reorder2(.f = census_region, 
+                                       .x = study_year, 
+                                       .y = median_childcare, 
+                                       .fun = last2, 
+                                       .desc = TRUE))) +
+  # Raw data points
+  geom_point() +
+  # Smoothed median line
+  geom_smooth(method = "loess",
+              se= TRUE,
+              linewidth = 1.2) +
+  facet_wrap(~ age_group, nrow = 1, scales = "fixed") +
+  scale_x_continuous(limits = c(2008,2018),
+                     breaks = seq(2008, 2024, by = 2),
+                     minor_breaks = NULL) +
+  scale_y_continuous(limits = c(0,500),
+                     breaks = seq(0,500, by = 100),
+                     labels = scales::dollar_format(accuracy = 1)) +
+  labs(title = "Weekly Median Price for Center-Based Childcare ($)",
+       x = "Study Year",
+       y = "",
+       color = "California Region") +
+  theme(aspect.ratio = 1,
+        axis.text.x = element_text(size = 6))
 
 ```
 
@@ -157,7 +233,16 @@ ca_childcare |>
 
 ```{r}
 #| label: wd-4-string
-
+# Lab 5
+suspect_concert <- 
+  left_join(x = suspect_description,
+            y = facebook_event_checkin,
+            by = join_by(id == person_id)) |> 
+  mutate(date = as.character(date)) |> 
+  filter(event_name == "SQL Symphony Concert",
+         str_detect(date,
+                    pattern = "^201712"))
+suspect_concert
 ```
 
 -   Date (example must use functions from **lubridate**)
@@ -185,6 +270,17 @@ ca_childcare
 
 ```{r}
 #| label: wd-5-right
+# Lab 5
+suspect_description <- drivers_license |> 
+  right_join(x = person,
+             y = drivers_license,
+             by = join_by(license_id == id)) |> 
+  filter(height >= 65, height <= 67,
+         hair_color == "red",
+         gender == "female",
+         car_make == "Tesla",
+         car_model == "Model S")
+suspect_description
 
 ```
 
@@ -192,7 +288,14 @@ ca_childcare
 
 ```{r}
 #| label: wd-5-left-right-ex-2
+# Lab 5
+first_suspect_interview <-
+  left_join( x = first_murder_suspect,
+             y = interview,
+             by = join_by(person_id)) |> 
+  pull(transcript)
 
+first_suspect_interview
 ```
 
 -   `inner_join()` Example 1
@@ -213,6 +316,12 @@ ca_childcare
 
 ```{r}
 #| label: wd-5-inner-ex-2
+# Lab 5
+first_murder_suspect <-
+  inner_join(x = second_witness_gym_info,
+            y = first_witness_info,
+            by = join_by(person_id == id))
+first_murder_suspect
 
 ```
 
