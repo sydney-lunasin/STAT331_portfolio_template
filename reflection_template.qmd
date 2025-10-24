@@ -448,7 +448,7 @@ ggplot(data = surveys,
   geom_boxplot(outliers = FALSE) +
   scale_fill_manual(values = c("F" = "#4060C8FF", "M" = "#F28AAAFF")) +
   labs(title = "Distribution of weight seen in different species",
-       x = 'Weight (lbs)', y = 'Species') 
+       x = 'Weight (g)', y = 'Species') 
 
 
 ```
@@ -502,8 +502,8 @@ ggplot(data = surveys,
   geom_point(alpha = 0.3) +
   facet_wrap(~species) +
   labs(title = "Relationship between weight and length of hindfoot by species",
-       subtitle = "Length of Hindfoot (in)",
-       x = "Weight (lbs)", y = "")
+       subtitle = "Length of Hindfoot (cm)",
+       x = "Weight (g)", y = "")
 ```
 
 -   At least one numeric variable and one categorical variable
@@ -517,7 +517,7 @@ ggplot(data = surveys,
   geom_boxplot(outliers = FALSE) +
   scale_fill_manual(values = c("F" = "#4060C8FF", "M" = "#F28AAAFF")) +
   labs(title = "Distribution of weight seen in different species",
-       x = 'Species', y = 'Weight (lbs)') +
+       x = 'Species', y = 'Weight (g)') +
   theme(axis.text.x = element_text(angle = 45))
 ```
 
@@ -532,7 +532,7 @@ ggplot(data = surveys,
   geom_boxplot(outliers = FALSE) +
   scale_fill_manual(values = c("F" = "#4060C8FF", "M" = "#F28AAAFF")) +
   labs(title = "Distribution of weight seen in different species",
-       x = 'Species', y = 'Weight (lbs)') +
+       x = 'Species', y = 'Weight (g)') +
   theme(axis.text.x = element_text(angle = 45))
 ```
 
@@ -540,7 +540,7 @@ ggplot(data = surveys,
 
 ```{r}
 #| label: dvs-2-date
-# Lab 4
+# Lab 4 Q7
 ggplot(data = one_table,
        mapping = aes(x = study_year, y = median_childcare, 
                   color = fct_reorder2(.f = census_region, 
@@ -574,27 +574,79 @@ ggplot(data = one_table,
 
 ```{r}
 #| label: dvs-2-ex-1
-
+# Lab 4 Q7
+ggplot(data = one_table,
+       mapping = aes(x = study_year, y = median_childcare, 
+                  color = fct_reorder2(.f = census_region, 
+                                       .x = study_year, 
+                                       .y = median_childcare, 
+                                       .fun = last2, 
+                                       .desc = TRUE))) +
+  # Raw data points
+  geom_point() +
+  # Smoothed median line
+  geom_smooth(method = "loess",
+              se= TRUE,
+              linewidth = 1.2) +
+  facet_wrap(~ age_group, nrow = 1, scales = "fixed") + 
+  scale_x_continuous(limits = c(2008,2018),
+                     breaks = seq(2008, 2024, by = 2),
+                     minor_breaks = NULL) +
+  scale_y_continuous(limits = c(0,500),
+                     breaks = seq(0,500, by = 100),
+                     labels = scales::dollar_format(accuracy = 1)) +
+  labs(title = "Weekly Median Price for Center-Based Childcare ($)",
+       x = "Study Year", y = "",
+       color = "California Region") +
+  theme(aspect.ratio = 1,
+        axis.text.x = element_text(size = 6))
 ```
 
 -   I can modify my colors to be accessible to anyone's eyes
 
 ```{r}
 #| label: dvs-2-ex-2
-
+# Lab 4 Q8
+ggplot(data = ca_childcare,
+       mapping = aes(x = mhi_2018, y = mc_infant)) +
+  geom_point(color = 'blueviolet') +
+  geom_smooth(color = 'darkorange2', method = lm) +
+  labs(title = "Linear relationship between income and price of childcare for an infant",
+       x = 'Median Household Income (2018 dollars)', 
+       y = 'Median weekly price for center-based childcare') +
+  scale_x_continuous(labels = scales::dollar) +
+  scale_y_continuous(labels = scales::dollar)
 ```
 
 -   I can modify my plot titles to clearly communicate the data context
 
 ```{r}
 #| label: dvs-2-ex-3
-
+# Lab 4 Q8
+ggplot(data = ca_childcare,
+       mapping = aes(x = mhi_2018, y = mc_infant)) +
+  geom_point(color = 'blueviolet') +
+  geom_smooth(color = 'darkorange2', method = lm) +
+  labs(title = "Linear relationship between income and price of childcare for an infant",
+       x = 'Median Household Income (2018 dollars)', 
+       y = 'Median weekly price for center-based childcare') +
+  scale_x_continuous(labels = scales::dollar) +
+  scale_y_continuous(labels = scales::dollar)
 ```
 
 -   I can modify the text in my plot to be more readable
 
 ```{r}
 #| label: dvs-2-ex-4
+# Lab 2 Q8 Modified
+ggplot(data = surveys,
+       mapping = aes(x = species, y = weight, fill = sex)) +
+  geom_jitter(color = '#7C6BB0FF' , alpha = 0.2) +
+  geom_boxplot(outliers = FALSE) +
+  scale_fill_manual(values = c("F" = "#4060C8FF", "M" = "#F28AAAFF")) +
+  labs(title = "Distribution of weight seen in different species",
+       x = 'Species', y = 'Weight (g)') +
+  theme(axis.text.x = element_text(size = 5))
 
 ```
 
@@ -602,7 +654,32 @@ ggplot(data = one_table,
 
 ```{r}
 #| label: dvs-2-ex-5
-
+# Lab 4 Q7
+ggplot(data = one_table,
+       mapping = aes(x = study_year, y = median_childcare, 
+                  color = fct_reorder2(.f = census_region, 
+                                       .x = study_year, 
+                                       .y = median_childcare, 
+                                       .fun = last2, 
+                                       .desc = TRUE))) +
+  # Raw data points
+  geom_point() +
+  # Smoothed median line
+  geom_smooth(method = "loess",
+              se= TRUE,
+              linewidth = 1.2) +
+  facet_wrap(~ age_group, nrow = 1, scales = "fixed") + 
+  scale_x_continuous(limits = c(2008,2018),
+                     breaks = seq(2008, 2024, by = 2),
+                     minor_breaks = NULL) +
+  scale_y_continuous(limits = c(0,500),
+                     breaks = seq(0,500, by = 100),
+                     labels = scales::dollar_format(accuracy = 1)) +
+  labs(title = "Weekly Median Price for Center-Based Childcare ($)",
+       x = "Study Year", y = "",
+       color = "California Region") +
+  theme(aspect.ratio = 1,
+        axis.text.x = element_text(size = 6))
 ```
 
 **DVS-3: I show creativity in my visualizations**
