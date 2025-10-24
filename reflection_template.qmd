@@ -194,7 +194,17 @@ teacher_evals_clean
 
 ```{r}
 #| label: wd-4-numeric-ex-2
+#Challenge 3
+teacher_evals_compare <- teacher_evals |> 
+  filter(question_no == 903) |> 
+  mutate(SET_level = if_else(SET_score_avg >= 4, "excellent", "standard"),
+         sen_level = case_when(seniority <= 4 ~ "junior",
+                               between(seniority, 5,8) ~ "senior",
+                               seniority > 8 ~ "very senior"
+         )) |> 
+  select(course_id, SET_level, sen_level)
 
+teacher_evals_compare  
 
 ```
 
@@ -419,11 +429,11 @@ median_house_income
 
 The following assignments satisfy the above criteria:
 
--   Example 1
--   Example 2
--   Example 3
--   Example 4
--   Example 5
+-   Example 1- Lab 3
+-   Example 2- Challenge 3
+-   Example 3- Lab 4
+-   Example 4- Challenge 4
+-   Example 5- Lab 5
 
 **R-2: I can write well documented and tidy code.**
 
@@ -431,6 +441,15 @@ The following assignments satisfy the above criteria:
 
 ```{r}
 #| label: r-2-1
+# Lab 2
+ggplot(data = surveys,
+       mapping = aes(x = weight, y = species, fill = sex)) +
+  geom_jitter(color = '#7C6BB0FF', alpha = 0.2) +
+  geom_boxplot(outliers = FALSE) +
+  scale_fill_manual(values = c("F" = "#4060C8FF", "M" = "#F28AAAFF")) +
+  labs(title = "Distribution of weight seen in different species",
+       x = 'Weight (lbs)', y = 'Species') 
+
 
 ```
 
@@ -438,7 +457,12 @@ The following assignments satisfy the above criteria:
 
 ```{r}
 #| label: r-2-2
-
+# challenge 4
+plot_data <- ca_childcare |> 
+  select(me_2018, fme_2018, mme_2018, mc_infant) |>
+  pivot_longer(cols = c('me_2018', 'fme_2018', 'mme_2018'),
+               names_to = "metric",
+               values_to = "median_value")
 ```
 
 -   Example of function formatting
@@ -472,28 +496,76 @@ The following assignments satisfy the above criteria:
 
 ```{r}
 #| label: dvs-1-num
-
+# Lab 2
+ggplot(data = surveys,
+       mapping = aes(x = weight, y = hindfoot_length)) +
+  geom_point(alpha = 0.3) +
+  facet_wrap(~species) +
+  labs(title = "Relationship between weight and length of hindfoot by species",
+       subtitle = "Length of Hindfoot (in)",
+       x = "Weight (lbs)", y = "")
 ```
 
 -   At least one numeric variable and one categorical variable
 
 ```{r}
 #| label: dvs-2-num-cat
-
+# Lab 2
+ggplot(data = surveys,
+       mapping = aes(x = species, y = weight, fill = sex)) +
+  geom_jitter(color = '#7C6BB0FF' , alpha = 0.2) +
+  geom_boxplot(outliers = FALSE) +
+  scale_fill_manual(values = c("F" = "#4060C8FF", "M" = "#F28AAAFF")) +
+  labs(title = "Distribution of weight seen in different species",
+       x = 'Species', y = 'Weight (lbs)') +
+  theme(axis.text.x = element_text(angle = 45))
 ```
 
 -   At least two categorical variables
 
 ```{r}
 #| label: dvs-2-cat
-
+# Lab 2
+ggplot(data = surveys,
+       mapping = aes(x = species, y = weight, fill = sex)) +
+  geom_jitter(color = '#7C6BB0FF' , alpha = 0.2) +
+  geom_boxplot(outliers = FALSE) +
+  scale_fill_manual(values = c("F" = "#4060C8FF", "M" = "#F28AAAFF")) +
+  labs(title = "Distribution of weight seen in different species",
+       x = 'Species', y = 'Weight (lbs)') +
+  theme(axis.text.x = element_text(angle = 45))
 ```
 
 -   Dates (time series plot)
 
 ```{r}
 #| label: dvs-2-date
-
+# Lab 4
+ggplot(data = one_table,
+       mapping = aes(x = study_year, y = median_childcare, 
+                  color = fct_reorder2(.f = census_region, 
+                                       .x = study_year, 
+                                       .y = median_childcare, 
+                                       .fun = last2, 
+                                       .desc = TRUE))) +
+  # Raw data points
+  geom_point() +
+  # Smoothed median line
+  geom_smooth(method = "loess",
+              se= TRUE,
+              linewidth = 1.2) +
+  facet_wrap(~ age_group, nrow = 1, scales = "fixed") + 
+  scale_x_continuous(limits = c(2008,2018),
+                     breaks = seq(2008, 2024, by = 2),
+                     minor_breaks = NULL) +
+  scale_y_continuous(limits = c(0,500),
+                     breaks = seq(0,500, by = 100),
+                     labels = scales::dollar_format(accuracy = 1)) +
+  labs(title = "Weekly Median Price for Center-Based Childcare ($)",
+       x = "Study Year", y = "",
+       color = "California Region") +
+  theme(aspect.ratio = 1,
+        axis.text.x = element_text(size = 6))
 ```
 
 **DVS-2: I use plot modifications to make my visualization clear to the reader.**
