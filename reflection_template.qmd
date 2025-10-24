@@ -22,6 +22,8 @@ execute:
 
 ```{r}
 #| label: wd-1-csv-1
+# Lab 3
+teacher_evals <- read_csv(here::here("Week 3", "Lab 3", "teacher_evals.csv"))
 
 ```
 
@@ -29,7 +31,8 @@ execute:
 
 ```{r}
 #| label: wd-1-csv-2
-
+# Lab 4
+childcare_costs <- read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-05-09/childcare_costs.csv')
 ```
 
 -   `xlsx`
@@ -45,13 +48,26 @@ execute:
 
 ```{r}
 #| label: wd-2-ex-1
+#From Lab 4 Q5
+median_house_income <- ca_childcare |> 
+  select(census_region, study_year, mhi_2018) |> 
+  group_by(census_region, study_year) |> 
+  summarise(median_mhi = median(mhi_2018, na.rm = TRUE), .groups = "drop") |> 
+  pivot_wider(names_from = study_year,
+              values_from = median_mhi,
+              names_prefix = "year_") |> 
+  select(census_region,`year_2008`, `year_2018`) |> 
+  arrange(desc(`year_2018`))
 
+median_house_income
 ```
 
 -   Example removing specified columns
 
 ```{r}
 #| label: wd-2-ex-2
+
+
 
 ```
 
@@ -68,7 +84,15 @@ execute:
 
 ```{r}
 #| label: wd-3-numeric-ex-1
-
+# From Lab 4 Q6
+ca_childcare |> 
+  filter(study_year == 2018) |> 
+  select(census_region, study_year, mc_infant) |> 
+  group_by(census_region, study_year) |>
+  summarise(median_mc_infant = median(mc_infant, na.rm = TRUE), .groups = "drop") |>
+  pivot_wider(names_from = study_year,
+              values_from = median_mc_infant) |> 
+  slice_min(`2018`)
 ```
 
 -   Numeric Example 2
@@ -149,6 +173,11 @@ execute:
 
 ```{r}
 #| label: wd-5-left-ex-1
+# From Lab 4 Q3
+ca_childcare <- ca_childcare |> 
+  left_join(y = tax_rev,
+            by = join_by(county_name == entity_name, study_year == year ))
+ca_childcare
 
 ```
 
@@ -170,6 +199,13 @@ execute:
 
 ```{r}
 #| label: wd-5-inner-ex-1
+# From Lab 4 Q2
+ca_childcare <-
+  filter(counties, state_name == "California") |> 
+  inner_join(y = childcare_costs,
+             by = "county_fips_code"
+  )
+ca_childcare
 
 ```
 
@@ -209,6 +245,18 @@ execute:
 
 ```{r}
 #| label: wd-7-wide
+#From Lab 4 Q5
+median_house_income <- ca_childcare |> 
+  select(census_region, study_year, mhi_2018) |> 
+  group_by(census_region, study_year) |> 
+  summarise(median_mhi = median(mhi_2018, na.rm = TRUE), .groups = "drop") |> 
+  pivot_wider(names_from = study_year,
+              values_from = median_mhi,
+              names_prefix = "year_") |> 
+  select(census_region,`year_2008`, `year_2018`) |> 
+  arrange(desc(`year_2018`))
+
+median_house_income
 
 ```
 
