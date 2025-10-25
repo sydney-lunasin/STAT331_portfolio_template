@@ -1119,4 +1119,10 @@ I've extended my thinking by using Google and ChatGPT to better format my code a
 
 These are some examples of feedback I gave to my peers:
 
+Lab 5: Hi! Overall your code spacing after the commas and before and after your equal signs look great. You also consistently created a new line after each pipe operator. In the future, I would suggest aligning tabs for the the arguments in a function. Great job!
+
+Lab 3: Hi Caleb! I like that you consistently had good spacing on either side of your equal signs and a space after your commas. You also always started a new row after each pipe which is great. One recommendation that I have is to make new rows in the longer blocks of code. Changing the format to be more vertical, rather than horizontal, will make your code more readable and the user won't need to scroll to see all the code.
+
 <!-- Include a description of how you grew as a collaborator through the weekly pair programming activities.   -->
+
+During the weekly pair programming, I think I have been a good partner because I respect the roles that we are each in. I only offer additional help or ask for additional help when we get really stuck in a problem. I always try to listen and try out my partner's ideas when I get stuck.
