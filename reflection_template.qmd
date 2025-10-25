@@ -10,7 +10,7 @@ execute:
   echo: true
 ---
 
-[**My Grade:**]{.underline} I believe my grade equivalent to course work evidenced below to be an \_\_.
+[**My Grade:**]{.underline} I believe my grade equivalent to course work evidenced below to be an B.
 
 [**Learning Objective Evidence:**]{.underline} In the code chunks below, provide code from Lab or Challenge assignments where you believe you have demonstrated proficiency with the specified learning target. Be sure to specify **where** the code came from (e.g., Lab 4 Question 2).
 
@@ -84,7 +84,7 @@ suspect_description
 
 ```{r}
 #| label: wd-2-ex-3
-# From Lab 4
+# From Lab 4 Q7
 one_table <- ca_childcare |>
   select(census_region, study_year, mc_infant, mc_toddler, mc_preschool) |> 
   pivot_longer(
@@ -187,7 +187,7 @@ suspect_concert
 
 ```{r}
 #| label: wd-4-numeric-ex-1
-# Lab 3
+# Lab 3 Q5
 teacher_evals_clean <- teacher_evals |> 
   rename(sex = gender) |> 
    mutate(teacher_id = as.character(teacher_id),
@@ -213,7 +213,7 @@ teacher_evals_clean
 
 ```{r}
 #| label: wd-4-numeric-ex-2
-#Challenge 3
+#Challenge 3 Q1
 teacher_evals_compare <- teacher_evals |> 
   filter(question_no == 903) |> 
   mutate(SET_level = if_else(SET_score_avg >= 4, "excellent", "standard"),
@@ -231,7 +231,7 @@ teacher_evals_compare
 
 ```{r}
 #| label: wd-4-factor-ex-1
-# Lab 4
+# Lab 4 Q4
 ca_childcare <- ca_childcare |> 
   mutate(county_name = str_remove(county_name, " County"),
          census_region = fct_collapse(.f = county_name,
@@ -254,7 +254,7 @@ ca_childcare
 
 ```{r}
 #| label: wd-4-factor-ex-2
-# Lab 4
+# Lab 4 Q7
 ggplot(data = one_table,
        mapping = aes(x = study_year, y = median_childcare, 
                   color = fct_reorder2(.f = census_region, 
@@ -395,7 +395,6 @@ first_murder_suspect
 
 ```{r}
 #| label: wd-6-semi
-
 # Lab 5 modified
 income |> 
   semi_join(suspect_concert,
@@ -421,8 +420,7 @@ witness
 
 ```{r}
 #| label: wd-7-long
-
-# Lab 4
+# Lab 4 Q7
 one_table <- ca_childcare |>
   select(census_region, study_year, mc_infant, mc_toddler, mc_preschool) |> 
   pivot_longer(
@@ -474,7 +472,7 @@ The following assignments satisfy the above criteria:
 
 ```{r}
 #| label: r-2-1
-# Lab 2
+# Lab 2 Q16
 ggplot(data = surveys,
        mapping = aes(x = weight, y = species, fill = sex)) +
   geom_jitter(color = '#7C6BB0FF', alpha = 0.2) +
@@ -490,7 +488,7 @@ ggplot(data = surveys,
 
 ```{r}
 #| label: r-2-2
-# challenge 4
+# Challenge 4
 plot_data <- ca_childcare |> 
   select(me_2018, fme_2018, mme_2018, mc_infant) |>
   pivot_longer(cols = c('me_2018', 'fme_2018', 'mme_2018'),
@@ -544,7 +542,7 @@ ca_childcare
 
 ```{r}
 #| label: dvs-1-num
-# Lab 2
+# Lab 2 Q4
 ggplot(data = surveys,
        mapping = aes(x = weight, y = hindfoot_length)) +
   geom_point(alpha = 0.3) +
@@ -558,7 +556,7 @@ ggplot(data = surveys,
 
 ```{r}
 #| label: dvs-2-num-cat
-# Lab 2
+# Lab 2 Q8
 ggplot(data = surveys,
        mapping = aes(x = species, y = weight, fill = sex)) +
   geom_jitter(color = '#7C6BB0FF' , alpha = 0.2) +
@@ -573,7 +571,7 @@ ggplot(data = surveys,
 
 ```{r}
 #| label: dvs-2-cat
-# Lab 2
+# Lab 2 Q8
 ggplot(data = surveys,
        mapping = aes(x = species, y = weight, fill = sex)) +
   geom_jitter(color = '#7C6BB0FF' , alpha = 0.2) +
@@ -1105,14 +1103,20 @@ summary(reg_mod1)
 
 <!-- How did you revise your thinking throughout the course? How did you revise your thinking on the code examples you have provided in your portfolio? -->
 
+In this class, I have worked hard to read over all the comments of that are given to me on each lab and challenge. I attempt to complete the revisions and work with my classmates as well as Dr. T to understand each function and the accompanying syntax. I try to incorporate the comments I receive in previous assignments to future ones. For example, in Lab 2 I received a comment to include the units in the axis labels in graphs, and I made sure to include them in the graphs in Lab 4.
+
 <!-- For the revisions included in your Portfolio, to help me understand the nature of your revisions, please denote somehow the feedback I provided you (e.g., boldface, italics, colored text) before your revisions. -->
 
 ## Extending My Thinking
 
 <!-- How did you extended your thinking throughout the course? How did you extend your thinking on the code examples you have provided in your portfolio? -->
 
+I've extended my thinking by using Google and ChatGPT to better format my code and use the most efficient methods. I have also found alternative colors and themes for my visualizations. For example, in Lab 4 I used Google to find a color palette library for my graphs. I had to use the documentation to figure out new ways to use the palette in my visuals and use the correct syntax.
+
 ## Peer Support & Collaboration
 
 <!-- Include an image or a description of feedback you gave that you are proud of (either in a peer review or in Discord). -->
+
+These are some examples of feedback I gave to my peers:
 
 <!-- Include a description of how you grew as a collaborator through the weekly pair programming activities.   -->
