@@ -688,14 +688,32 @@ ggplot(data = one_table,
 
 ```{r}
 #| label: dvs-3-1-ex-1
-
+# Lab 2 Q8
+ggplot(data = surveys,
+       mapping = aes(x = species, y = weight, fill = sex)) +
+  geom_jitter(color = '#7C6BB0FF' , alpha = 0.2) +
+  geom_boxplot(outliers = FALSE) +
+  scale_fill_manual(values = c("F" = "#4060C8FF", "M" = "#F28AAAFF")) +
+  labs(title = "Distribution of weight seen in different species",
+       x = 'Species', y = 'Weight (g)') +
+  theme(axis.text.x = element_text(size = 5))
 ```
 
 -   I can use non-standard colors (Example 2)
 
 ```{r}
 #| label: dvs-3-1-ex-2
-
+# Challenge 4 Plot
+ggplot(data = plot_data,
+       mapping = aes(x = median_value, y = mc_infant, fill = metric)) +
+  geom_point(aes(color = metric), alpha = 0.2) +
+  geom_smooth(method = 'lm') +
+  scale_color_viridis(discrete = TRUE, option = "A") +
+  scale_fill_viridis(discrete = TRUE) +
+  theme(panel.background = element_rect(fill = 'white')) +
+  labs(title = "Male and female earnings relationship with infant childcare costs ($)",
+       x = "Median earnings ($)",
+       y = "Median Center-Based Infant Childare Costs ($)")
 ```
 
 -   I can use annotations (e.g., `geom_text()`)
@@ -718,14 +736,31 @@ ggplot(data = one_table,
 
 ```{r}
 #| label: dvs-4-summarize
-
+# Lab 3 Q6
+teacher_evals_clean |> 
+  ungroup() |> 
+  summarise(
+    unique_instructors = n_distinct(teacher_id),
+    unique_courses = n_distinct(course_id))
 ```
 
 -   Example using `across()`
 
 ```{r}
 #| label: dvs-4-across
-
+# Challenge 4 Table Modified
+ca_childcare |>
+  select(study_year, mhi_2018, me_2018, fme_2018, mc_infant) |>
+  group_by(study_year) |>
+  summarise(
+    across(
+      .cols = c(mc_infant, mhi_2018, fme_2018, me_2018),
+      .fns = ~ median(.x, na.rm = TRUE)),
+    .groups = "drop") |> 
+  rename("Median Childcare Cost" = mc_infant,
+         "Median Household Income" = mhi_2018,
+         "Median Female Earnings" = fme_2018,
+         "Median Male Earnings" = me_2018)
 ```
 
 **DVS-5: I can find summaries of variables across multiple groups.**
@@ -734,13 +769,31 @@ ggplot(data = one_table,
 
 ```{r}
 #| label: dvs-5-1
-
+# Lab 3 Q6
+teacher_evals_clean |> 
+  ungroup() |> 
+  summarise(
+    unique_instructors = n_distinct(teacher_id),
+    unique_courses = n_distinct(course_id)
+  )
 ```
 
 -   Example 2
 
 ```{r}
 #| label: dvs-5-2
+# Lab 4 Q5
+median_house_income <- ca_childcare |> 
+  select(census_region, study_year, mhi_2018) |> 
+  group_by(census_region, study_year) |> 
+  summarise(median_mhi = median(mhi_2018, na.rm = TRUE), .groups = "drop") |> 
+  pivot_wider(names_from = study_year,
+              values_from = median_mhi,
+              names_prefix = "year_") |> 
+  select(census_region,`year_2008`, `year_2018`) |> 
+  arrange(desc(`year_2018`))
+
+median_house_income
 
 ```
 
@@ -750,7 +803,7 @@ ggplot(data = one_table,
 
 ```{r}
 #| label: dvs-6-ex-1
-
+# 
 ```
 
 -   I can modify the text in my table to be more readable (e.g., bold face for column headers)
