@@ -66,9 +66,18 @@ median_house_income
 
 ```{r}
 #| label: wd-2-ex-2
-
-
-
+# Lab 5 Modified
+suspect_description <- drivers_license |> 
+  right_join(x = person,
+             y = drivers_license,
+             by = join_by(license_id == id)) |> 
+  filter(height >= 65, height <= 67,
+         hair_color == "red",
+         gender == "female",
+         car_make == "Tesla",
+         car_model == "Model S") |> 
+  select(-c(address_number, address_street_name, age))
+suspect_description
 ```
 
 -   Example selecting columns based on logical values (e.g., `starts_with()`, `ends_with()`, `contains()`, `where()`)
@@ -111,7 +120,7 @@ ca_childcare |>
 
 ```{r}
 #| label: wd-3-numeric-ex-1
-# Challenge 3
+# Challenge 3 Q1
 teacher_evals_compare <- teacher_evals |> 
   filter(question_no == 903) |> 
   mutate(SET_level = if_else(SET_score_avg >= 4, "excellent", "standard"),
@@ -159,6 +168,16 @@ first_witness_info
 
 ```{r}
 #| label: wd-3-date
+# Lab 5 Modified
+suspect_concert <- 
+  left_join(x = suspect_description,
+            y = facebook_event_checkin,
+            by = join_by(id == person_id)) |> 
+  mutate(date = ymd(date)) |> 
+  filter(event_name == "SQL Symphony Concert",
+         year(date) == 2017,
+         month(date) == 12)
+suspect_concert
 
 ```
 
@@ -285,7 +304,16 @@ suspect_concert
 
 ```{r}
 #| label: wd-4-date
-
+# Lab 5 Modified
+suspect_concert <- 
+  left_join(x = suspect_description,
+            y = facebook_event_checkin,
+            by = join_by(id == person_id)) |> 
+  mutate(date = ymd(date)) |> 
+  filter(event_name == "SQL Symphony Concert",
+         year(date) == 2017,
+         month(date) == 12)
+suspect_concert
 ```
 
 **WD-5: I can use mutating joins to combine multiple dataframes.**
@@ -379,7 +407,12 @@ income |>
 
 ```{r}
 #| label: wd-6-anti
-
+# Lab 5 modified
+witness <-
+  anti_join(interview,
+            not_suspects,
+            by = join_by(person_id == id))
+witness
 ```
 
 **WD-7: I can pivot dataframes from long to wide and visa versa**
@@ -478,7 +511,22 @@ plot_data <- ca_childcare |>
 
 ```{r}
 #| label: r-3-example
+# Lab 4 Q4
+ca_childcare <- ca_childcare |> 
+  mutate(county_name = str_remove(county_name, " County"),
+         census_region = fct_collapse(.f = county_name,
+                                      "Superior California" = superior_counties,
+                                      "North Coast" = north_coast_counties,
+                                      "San Francisco Bay Area" = san_fran_counties,
+                                      "Northern San Joaquin Valley" = n_san_joaquin_counties,
+                                      "Central Coast" = central_coast_counties,
+                                      "Southern San Joaquin Valley" = s_san_joaquin_counties,
+                                      "Inland Empire" = inland_counties,
+                                      "Los Angeles County" = la_county,
+                                      "Orange County" = orange_county,
+                                      "San Diego - Imperial" = san_diego_imperial_counties))
 
+ca_childcare
 ```
 
 -   Example (function stops)
@@ -976,15 +1024,16 @@ ca_childcare |>
 
 ```{r}
 #| label: pe-4-1
-# Lab 4 Q8
-ggplot(data = ca_childcare,
-       mapping = aes(x = mhi_2018, y = mc_infant)) +
-  geom_point(color = 'blueviolet') +
-  geom_smooth(color = 'darkorange2', method = lm) +
-  labs(title = "Linear relationship between income and price of childcare for an infant",
-    x = 'Median Household Income (2018 dollars)', y = 'Median weekly price for center-based childcare') +
-  scale_x_continuous(labels = scales::dollar) +
-  scale_y_continuous(labels = scales::dollar)
+# Lab 3 Q8
+missing_values <- teacher_evals_clean |> 
+  group_by(teacher_id, course_id) |> 
+  filter(
+    if_any(
+      .cols = everything(),
+      .fns = ~ is.na(.x) 
+     ))
+
+missing_values
 ```
 
 -   I can connect a data wrangling pipeline into a `ggplot()`
