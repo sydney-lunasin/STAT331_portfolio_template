@@ -119,15 +119,14 @@ ca_childcare |>
 -   Numeric Example 2
 
 ```{r}
-#| label: wd-3-numeric-ex-1
+#| label: wd-3-numeric-ex-2
 # Challenge 3 Q1
 teacher_evals_compare <- teacher_evals |> 
   filter(question_no == 903) |> 
   mutate(SET_level = if_else(SET_score_avg >= 4, "excellent", "standard"),
          sen_level = case_when(seniority <= 4 ~ "junior",
                                between(seniority, 5,8) ~ "senior",
-                               seniority > 8 ~ "very senior"
-         )) |> 
+                               seniority > 8 ~ "very senior")) |> 
   select(course_id, SET_level, sen_level)
 
 teacher_evals_compare  
@@ -144,8 +143,7 @@ witnesses <- person |>
     (address_street_name == "Northwestern Dr" &
        address_number == max(address_number[address_street_name == "Northwestern Dr"])) |
     (address_street_name == "Franklin Ave" &
-       str_detect(name, "^Annabel"))
-  )  
+       str_detect(name, "^Annabel")))  
 witnesses
 
 ```
@@ -219,8 +217,7 @@ teacher_evals_compare <- teacher_evals |>
   mutate(SET_level = if_else(SET_score_avg >= 4, "excellent", "standard"),
          sen_level = case_when(seniority <= 4 ~ "junior",
                                between(seniority, 5,8) ~ "senior",
-                               seniority > 8 ~ "very senior"
-         )) |> 
+                               seniority > 8 ~ "very senior")) |> 
   select(course_id, SET_level, sen_level)
 
 teacher_evals_compare  
@@ -354,9 +351,9 @@ suspect_description
 #| label: wd-5-left-right-ex-2
 # Lab 5
 first_suspect_interview <-
-  left_join( x = first_murder_suspect,
-             y = interview,
-             by = join_by(person_id)) |> 
+  left_join(x = first_murder_suspect,
+            y = interview,
+            by = join_by(person_id)) |> 
   pull(transcript)
 
 first_suspect_interview
@@ -370,8 +367,7 @@ first_suspect_interview
 ca_childcare <-
   filter(counties, state_name == "California") |> 
   inner_join(y = childcare_costs,
-             by = "county_fips_code"
-  )
+             by = "county_fips_code")
 ca_childcare
 
 ```
@@ -1101,28 +1097,18 @@ summary(reg_mod1)
 
 ## Revising My Thinking
 
-<!-- How did you revise your thinking throughout the course? How did you revise your thinking on the code examples you have provided in your portfolio? -->
-
 In this class, I have worked hard to read over all the comments of that are given to me on each lab and challenge. I attempt to complete the revisions and work with my classmates as well as Dr. T to understand each function and the accompanying syntax. I try to incorporate the comments I receive in previous assignments to future ones. For example, in Lab 2 I received a comment to include the units in the axis labels in graphs, and I made sure to include them in the graphs in Lab 4.
 
-<!-- For the revisions included in your Portfolio, to help me understand the nature of your revisions, please denote somehow the feedback I provided you (e.g., boldface, italics, colored text) before your revisions. -->
-
 ## Extending My Thinking
-
-<!-- How did you extended your thinking throughout the course? How did you extend your thinking on the code examples you have provided in your portfolio? -->
 
 I've extended my thinking by using Google and ChatGPT to better format my code and use the most efficient methods. I have also found alternative colors and themes for my visualizations. For example, in Lab 4 I used Google to find a color palette library for my graphs. I had to use the documentation to figure out new ways to use the palette in my visuals and use the correct syntax.
 
 ## Peer Support & Collaboration
-
-<!-- Include an image or a description of feedback you gave that you are proud of (either in a peer review or in Discord). -->
 
 These are some examples of feedback I gave to my peers:
 
 Lab 5: Hi! Overall your code spacing after the commas and before and after your equal signs look great. You also consistently created a new line after each pipe operator. In the future, I would suggest aligning tabs for the the arguments in a function. Great job!
 
 Lab 3: Hi Caleb! I like that you consistently had good spacing on either side of your equal signs and a space after your commas. You also always started a new row after each pipe which is great. One recommendation that I have is to make new rows in the longer blocks of code. Changing the format to be more vertical, rather than horizontal, will make your code more readable and the user won't need to scroll to see all the code.
-
-<!-- Include a description of how you grew as a collaborator through the weekly pair programming activities.   -->
 
 During the weekly pair programming, I think I have been a good partner because I respect the roles that we are each in. I only offer additional help or ask for additional help when we get really stuck in a problem. I always try to listen and try out my partner's ideas when I get stuck.
