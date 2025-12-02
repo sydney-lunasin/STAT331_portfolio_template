@@ -39,7 +39,14 @@ childcare_costs <- read_csv('https://raw.githubusercontent.com/rfordatascience/t
 
 ```{r}
 #| label: wd-1-xlsx
-
+# Practive Activity 4
+library(readxl)
+military <- read_xlsx("gov_spending_per_capita.xlsx",
+                      sheet = "Share of Govt. spending",
+                      skip  = 7,
+                      n_max = 190,
+                      na = c(". .", "xxx", "..")
+                      )
 ```
 
 **WD-2: I can select necessary columns from a dataset.**
@@ -285,16 +292,27 @@ ggplot(data = one_table,
 
 ```{r}
 #| label: wd-4-string
-# Lab 5
-suspect_concert <- 
-  left_join(x = suspect_description,
-            y = facebook_event_checkin,
-            by = join_by(id == person_id)) |> 
-  mutate(date = as.character(date)) |> 
-  filter(event_name == "SQL Symphony Concert",
-         str_detect(date,
-                    pattern = "^201712"))
-suspect_concert
+# Lab 8
+cool_plot <- function(df, x_var, y_var, fill_var){
+  
+  x_label <- str_to_title(str_replace_all(as_label(ensym(x_var)), "_", " "))
+  y_label <- str_to_title(str_replace_all(as_label(ensym(y_var)), "_", " "))
+  fill_label <- str_to_title(str_replace_all(as_label(ensym(fill_var)), "_", " "))
+  
+  label <- rlang::englue("A scatterplot of {x_label} and {y_label}")
+  sub <- rlang::englue("A line of best fit is applied to each {fill_label}")
+  
+  ggplot(df, mapping = aes(x = {{x_var}}, y = {{y_var}}, fill = {{fill_var}})) +
+    geom_point(shape = 21, size = 2) +
+    geom_smooth(method = "lm", se = FALSE, color = "grey") +
+    #scale_fill_brewer(palette = "YlGnBu") +
+    labs(
+      title = label,
+      subtitle = sub,
+      x = x_label,
+      y = y_label
+    )
+}
 ```
 
 -   Date (example must use functions from **lubridate**)
@@ -392,7 +410,17 @@ first_murder_suspect
 ```{r}
 #| label: wd-6-semi
 # Lab 5 modified
-income |> 
+suspect_concert <- 
+  left_join(x = suspect_description,
+            y = facebook_event_checkin,
+            by = join_by(id == person_id)) |> 
+  mutate(date = ymd(date)) |> 
+  filter(event_name == "SQL Symphony Concert",
+         year(date) == 2017,
+         month(date) == 12)
+suspect_concert
+
+murder_suspect <- income |> 
   semi_join(suspect_concert,
             by = join_by(ssn))
 
@@ -403,11 +431,17 @@ income |>
 ```{r}
 #| label: wd-6-anti
 # Lab 5 modified
-witness <-
+not_suspects <- person |> 
+  filter(! ((address_street_name == "Northwestern Dr" &
+          address_number == max(address_number[address_street_name == "Northwestern Dr"])) |
+          (address_street_name == "Franklin Ave" &
+          str_detect(name, "^Annabel"))))  
+
+witness_transcript <-
   anti_join(interview,
             not_suspects,
             by = join_by(person_id == id))
-witness
+witness_transcript
 ```
 
 **WD-7: I can pivot dataframes from long to wide and visa versa**
@@ -435,16 +469,16 @@ one_table
 
 ```{r}
 #| label: wd-7-wide
-#From Lab 4 Q5
+#From Lab 4 Q5, modified
 median_house_income <- ca_childcare |> 
   select(census_region, study_year, mhi_2018) |> 
   group_by(census_region, study_year) |> 
   summarise(median_mhi = median(mhi_2018, na.rm = TRUE), .groups = "drop") |> 
   pivot_wider(names_from = study_year,
               values_from = median_mhi,
-              names_prefix = "year_") |> 
-  select(census_region,`year_2008`, `year_2018`) |> 
-  arrange(desc(`year_2018`))
+              names_prefix = "Median MHI, ") |> 
+  select(census_region, "Median MHI, 2008", "Median MHI, 2018") |> 
+  arrange(desc("Median MHI, 2018"))
 
 median_house_income
 
@@ -496,7 +530,17 @@ plot_data <- ca_childcare |>
 
 ```{r}
 #| label: r-2-3
-
+# Lab 8 
+pivot_table <- function(df, row, col){
+  if (!is.data.frame(df)) return(NA)
+  df |> 
+    count({{row}}, {{col}}) |> 
+    pivot_wider(names_from = {{row}},
+                values_from = n,
+                values_fill = 0) |> 
+    ungroup() |> 
+    janitor::adorn_totals(where = c("row", "col"), name = "Total")
+}
 ```
 
 **R-3: I can write robust programs that are resistant to changes in inputs.**
@@ -505,29 +549,34 @@ plot_data <- ca_childcare |>
 
 ```{r}
 #| label: r-3-example
-# Lab 4 Q4
-ca_childcare <- ca_childcare |> 
-  mutate(county_name = str_remove(county_name, " County"),
-         census_region = fct_collapse(.f = county_name,
-                                      "Superior California" = superior_counties,
-                                      "North Coast" = north_coast_counties,
-                                      "San Francisco Bay Area" = san_fran_counties,
-                                      "Northern San Joaquin Valley" = n_san_joaquin_counties,
-                                      "Central Coast" = central_coast_counties,
-                                      "Southern San Joaquin Valley" = s_san_joaquin_counties,
-                                      "Inland Empire" = inland_counties,
-                                      "Los Angeles County" = la_county,
-                                      "Orange County" = orange_county,
-                                      "San Diego - Imperial" = san_diego_imperial_counties))
-
-ca_childcare
+# Lab 4 Q6
+ca_childcare |> 
+  filter(study_year == 2018) |> 
+  select(census_region, study_year, mc_infant) |> 
+  group_by(census_region, study_year) |>
+  summarise(median_mc_infant = median(mc_infant, na.rm = TRUE), .groups = "drop") |>
+  pivot_wider(names_from = study_year,
+              values_from = median_mc_infant) |> 
+  slice_min(`2018`)
 ```
 
 -   Example (function stops)
 
 ```{r}
 #| label: r-3-function-stops
-
+# Lab 10 Q1
+randomBabies <- function(n_babies){
+  if (!is.numeric(n_babies)) return(NA)
+  
+  babies_born <- tibble(mother = 1:n_babies,
+                        baby = sample(1:n_babies,
+                                      size = n_babies,
+                                      replace = FALSE))
+  
+  correct_returns <- babies_born |> 
+    filter(mother == baby) |> 
+    nrow()
+}
 ```
 
 ## Data Visualization & Summarization
@@ -780,7 +829,6 @@ ggplot(data = plot_data,
 #| label: dvs-4-summarize
 # Lab 3 Q6
 teacher_evals_clean |> 
-  ungroup() |> 
   summarise(
     unique_instructors = n_distinct(teacher_id),
     unique_courses = n_distinct(course_id))
