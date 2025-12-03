@@ -600,37 +600,52 @@ ggplot(data = surveys,
 -   At least one numeric variable and one categorical variable
 
 ```{r}
-#| label: dvs-2-num-cat
+#| label: dvs-1-num-cat
 # Lab 2 Q8
 ggplot(data = surveys,
        mapping = aes(x = species, y = weight, fill = sex)) +
   geom_jitter(color = '#7C6BB0FF' , alpha = 0.2) +
-  geom_boxplot(outliers = FALSE) +
+  geom_boxplot(outliers = FALSE)+
   scale_fill_manual(values = c("F" = "#4060C8FF", "M" = "#F28AAAFF")) +
-  labs(title = "Distribution of weight seen in different species",
-       x = 'Species', y = 'Weight (g)') +
-  theme(axis.text.x = element_text(angle = 45))
+  labs(
+    title = "Distribution of weight seen in different species" ,
+    x = 'Species', y = 'Weight (g)') +
+  theme(axis.text.x = element_text(size = 5))
 ```
 
 -   At least two categorical variables
 
 ```{r}
-#| label: dvs-2-cat
-# Lab 2 Q8
-ggplot(data = surveys,
-       mapping = aes(x = species, y = weight, fill = sex)) +
-  geom_jitter(color = '#7C6BB0FF' , alpha = 0.2) +
-  geom_boxplot(outliers = FALSE) +
-  scale_fill_manual(values = c("F" = "#4060C8FF", "M" = "#F28AAAFF")) +
-  labs(title = "Distribution of weight seen in different species",
-       x = 'Species', y = 'Weight (g)') +
-  theme(axis.text.x = element_text(angle = 45))
+#| label: dvs-1-cat
+# Lab 7 Q3, modified
+fish |> 
+  filter(if_any(trip:species, is.na)) |> 
+  group_by(year, section, trip) |>
+  summarize(weight_na = sum(is.na(weight)), .groups = "drop") |> 
+  mutate(
+    year     = as.factor(year),
+    section  = fct_relevel(as.factor(section), "Johnsrud", "ScottyBrown"),
+    trip     = as.factor(trip)
+  ) |> 
+  ggplot(aes(x = year, y = weight_na, fill = trip)) +
+  geom_col(width = 0.8) +  
+  facet_wrap(~ section, ncol = 1) +
+  labs(
+    x = "Year",
+    y = "Frequency of Weight NAs",
+    fill = "Trip",
+    subtitle = "Seperated by fishing section and stacked by trip",
+    title = "Missing weight measurements from trout observations"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(axis.text.x = element_text( hjust = 1)) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.08)))
 ```
 
 -   Dates (time series plot)
 
 ```{r}
-#| label: dvs-2-date
+#| label: dvs-1-date
 # Lab 4 Q7
 ggplot(data = one_table,
        mapping = aes(x = study_year, y = median_childcare, 
@@ -665,32 +680,29 @@ ggplot(data = one_table,
 
 ```{r}
 #| label: dvs-2-ex-1
-# Lab 4 Q7
-ggplot(data = one_table,
-       mapping = aes(x = study_year, y = median_childcare, 
-                  color = fct_reorder2(.f = census_region, 
-                                       .x = study_year, 
-                                       .y = median_childcare, 
-                                       .fun = last2, 
-                                       .desc = TRUE))) +
-  # Raw data points
-  geom_point() +
-  # Smoothed median line
-  geom_smooth(method = "loess",
-              se= TRUE,
-              linewidth = 1.2) +
-  facet_wrap(~ age_group, nrow = 1, scales = "fixed") + 
-  scale_x_continuous(limits = c(2008,2018),
-                     breaks = seq(2008, 2024, by = 2),
-                     minor_breaks = NULL) +
-  scale_y_continuous(limits = c(0,500),
-                     breaks = seq(0,500, by = 100),
-                     labels = scales::dollar_format(accuracy = 1)) +
-  labs(title = "Weekly Median Price for Center-Based Childcare ($)",
-       x = "Study Year", y = "",
-       color = "California Region") +
-  theme(aspect.ratio = 1,
-        axis.text.x = element_text(size = 6))
+# Lab 7 Q3, modified
+fish |> 
+  filter(if_any(trip:species, is.na)) |> 
+  group_by(year, section, trip) |>
+  summarize(weight_na = sum(is.na(weight)), .groups = "drop") |> 
+  mutate(
+    year     = as.factor(year),
+    section  = fct_relevel(as.factor(section), "Johnsrud", "ScottyBrown"),
+    trip     = as.factor(trip)
+  ) |> 
+  ggplot(aes(x = year, y = weight_na, fill = trip)) +
+  geom_col(width = 0.8) +  
+  facet_wrap(~ section, ncol = 1) +
+  labs(
+    x = "Year",
+    y = "Frequency of Weight NAs",
+    fill = "Trip",
+    subtitle = "Seperated by fishing section and stacked by trip",
+    title = "Missing weight measurements from trout observations"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(axis.text.x = element_text( hjust = 1)) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.08)))
 ```
 
 -   I can modify my colors to be accessible to anyone's eyes
@@ -729,15 +741,16 @@ ggplot(data = ca_childcare,
 
 ```{r}
 #| label: dvs-2-ex-4
-# Lab 2 Q8 Modified
-ggplot(data = surveys,
-       mapping = aes(x = species, y = weight, fill = sex)) +
-  geom_jitter(color = '#7C6BB0FF' , alpha = 0.2) +
-  geom_boxplot(outliers = FALSE) +
-  scale_fill_manual(values = c("F" = "#4060C8FF", "M" = "#F28AAAFF")) +
-  labs(title = "Distribution of weight seen in different species",
-       x = 'Species', y = 'Weight (g)') +
-  theme(axis.text.x = element_text(size = 5))
+# Lab 4 Q8
+ggplot(data = ca_childcare,
+       mapping = aes(x = mhi_2018, y = mc_infant)) +
+  geom_point(color = 'blueviolet') +
+  geom_smooth(color = 'darkorange2', method = lm) +
+  labs(title = "Linear relationship between income and price of childcare for an infant",
+       x = 'Median Household Income (2018 dollars)', 
+       y = 'Median weekly price for center-based childcare') +
+  scale_x_continuous(labels = scales::dollar) +
+  scale_y_continuous(labels = scales::dollar)
 
 ```
 
@@ -811,14 +824,56 @@ ggplot(data = plot_data,
 
 ```{r}
 #| label: dvs-3-2
-
+# Lab 10 Q13
+ci_dat_df |> 
+  slice_sample(n = 100) |> 
+  mutate(order = row_number()) |> 
+  
+ggplot(mapping = aes(y = order, xmin = conf.low, xmax = conf.high)) +
+  geom_errorbar(aes(color = factor(cover))) +
+  geom_vline(xintercept = 0.5, linetype = "dashed") +
+  annotate("text", x = 1, y = 105, label = "population slope = 0.5") +
+  scale_x_continuous(breaks = seq(-2, 2, by = 0.5)) +
+  scale_color_manual(values = c("0" = "red", "1" = "skyblue"), guide = "none") +
+  labs(
+    title = "95% Confidence Intervals of Estimated Regression Slope\nfor 100 Simulatied Datasets",
+    subtitle = "CIs that <b>do not</b> include the population slope are highlighted in <span style='color:red;'>red</span>",
+    x = "Slope Coefficient Estimate",
+    y = ""
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.y = element_blank(),
+    plot.subtitle = ggtext::element_markdown()
+  )
 ```
 
 -   I can choose creative geometries (e.g., `geom_segment()`, `geom_ribbon)()`)
 
 ```{r}
 #| label: dvs-3-3
-
+# Lab 10 Q13
+ci_dat_df |> 
+  slice_sample(n = 100) |> 
+  mutate(order = row_number()) |> 
+  
+ggplot(mapping = aes(y = order, xmin = conf.low, xmax = conf.high)) +
+  geom_errorbar(aes(color = factor(cover))) +
+  geom_vline(xintercept = 0.5, linetype = "dashed") +
+  annotate("text", x = 1, y = 105, label = "population slope = 0.5") +
+  scale_x_continuous(breaks = seq(-2, 2, by = 0.5)) +
+  scale_color_manual(values = c("0" = "red", "1" = "skyblue"), guide = "none") +
+  labs(
+    title = "95% Confidence Intervals of Estimated Regression Slope\nfor 100 Simulatied Datasets",
+    subtitle = "CIs that <b>do not</b> include the population slope are highlighted in <span style='color:red;'>red</span>",
+    x = "Slope Coefficient Estimate",
+    y = ""
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.y = element_blank(),
+    plot.subtitle = ggtext::element_markdown()
+  )
 ```
 
 **DVS-4: I can calculate numerical summaries of variables.**
