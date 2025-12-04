@@ -6,16 +6,22 @@ editor: visual
 
 **Answer each of the following questions with *one sentence* including a brief explanation.**
 
-1. Finish the sentence with another student’s name: "If [Name of Student] doesn’t earn an A, then nobody should, because..." Explain your choice and your reasoning.
+1.  Finish the sentence with another student’s name: "If \[Name of Student\] doesn’t earn an A, then nobody should, because..." Explain your choice and your reasoning.
 
+    If Sam Phan doesn't earn an A, then nobody should. I had him as a partner in a practice activity, and he was very knowledgeable in the assignment and was also a great collaborator.
 
-2. What was the most difficult part of the class for you? List a general topic, a specific problem, a kind of work we did, etc. and explain why.
+2.  What was the most difficult part of the class for you? List a general topic, a specific problem, a kind of work we did, etc. and explain why.
 
+    The most difficult part of the class for me was understanding the factor data type and how it can be used to manipulate data. It was difficult for me to conceptualize how factors were different than character datatypes and distinguish when they should be used.
 
-3. What was the easiest part of the class for you? Explain why.
+3.  What was the easiest part of the class for you? Explain why.
 
+    The easiest part of the class was learning how to format tables nicely so they can be easily readable. I think this section came easy to me since I have prior experience in excel, python, and SQL, so I have worked a lot with tables in other mediums.
 
-4. What part of the class surprised or interested you the most? Explain why.
+4.  What part of the class surprised or interested you the most? Explain why.
 
+    I was very interested in learning about how to make functions for simulating data. I think this is a very useful tool to have for working on other class projects for machine learning, computer simulations, and graduate projects.
 
-5. Give one piece of advice to a student just beginning a quarter of STAT 331 that will help them be successful in learning.
+5.  Give one piece of advice to a student just beginning a quarter of STAT 331 that will help them be successful in learning.
+
+    My piece of advice is to set aside intentional time to work on the labs and use all the notes from the lecture first, without using any outside forms of help (Google, ChatGPT, etc). When I would take my time with the labs and struggled through the harder questions I would retain the information a lot faster.
